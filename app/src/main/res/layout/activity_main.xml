@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+    tools:context="com.example.nkechi_nnaji.sharedprefexample.MainActivity">
+
+<android.support.v7.widget.Toolbar
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorPrimary"
+    android:minHeight="?attr/actionBarSize"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+
+
+<TextView
+    android:id="@+id/txtView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:text="Choose a color"
+    android:textSize="25sp"
+    android:textStyle="italic"
+    android:layout_marginTop="15dp"/>
+<Button
+    android:id="@+id/redBtn"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="25dp"
+    android:textSize="20sp"
+    android:text="Red"/>
+<Button
+    android:id="@+id/blueBtn"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="25dp"
+    android:textSize="20sp"
+    android:text="Blue"/>
+<Button
+    android:id="@+id/greenBtn"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="25dp"
+    android:textSize="20sp"
+    android:text="Green"/>
+<Button
+    android:id="@+id/yellowBtn"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="25dp"
+    android:textSize="20sp"
+    android:text="Yellow"/>
+<Button
+    android:id="@+id/blackBtn"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="25dp"
+    android:textSize="20sp"
+    android:text="Black"/>
+<Button
+    android:id="@+id/purpleBtn"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="25dp"
+    android:textSize="20sp"
+    android:text="Purple"/>
+<Button
+    android:id="@+id/orangeBtn"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="25dp"
+    android:textSize="20sp"
+    android:text="Orange"/>
+
+</LinearLayout>
