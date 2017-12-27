@@ -1,143 +1,71 @@
 package com.example.nkechi_nnaji.sharedprefexample;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Switch;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button redButton, greenButton, yellowButton, purpleButton, blueButton, blackButton, orangeButton;
-    Toolbar mToolbar;
-    SharedPreferences toolbarColor;
-    SharedPreferences.Editor meditor;
-    int selectedColor;
+    private EditText etName, etProfession;
+    private TextView txvName, txvProfession;
+    private Switch pageColorSwitch;
+    private LinearLayout pageLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mToolbar =(Toolbar) findViewById(R.id.toolbar);
-        redButton=(Button)findViewById(R.id.redBtn);
-        greenButton=(Button)findViewById(R.id.greenBtn);
-        yellowButton=(Button)findViewById(R.id.yellowBtn);
-        purpleButton=(Button)findViewById(R.id.purpleBtn);
-        blueButton=(Button)findViewById(R.id.blueBtn);
-        blackButton=(Button)findViewById(R.id.blackBtn);
-        orangeButton=(Button)findViewById(R.id.orangeBtn);
+        etName = (EditText) findViewById(R.id.etName);
+        etProfession = (EditText) findViewById(R.id.etProfession);
 
-        mToolbar.setTitle(getResources().getString(R.string.app_name));
-        if(getColor() != getResources().getColor(R.color.colorPrimary)){
-            mToolbar.setBackgroundColor(getColor());
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-                getWindow().setStatusBarColor(getColor());
-            }
-        }
+        txvName = (TextView) findViewById(R.id.txvName);
+        txvProfession = (TextView) findViewById(R.id.txvProfession);
 
-        redButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view)
-            {
-                mToolbar.setBackgroundColor(getResources().getColor(R.color.red));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    getWindow().setStatusBarColor(getResources().getColor(R.color.red));
-                }
-                setToolbarColor(getResources().getColor(R.color.red));
-            }
-        });
-
-        greenButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view)
-            {
-                mToolbar.setBackgroundColor(getResources().getColor(R.color.green));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    getWindow().setStatusBarColor(getResources().getColor(R.color.green));
-                }
-                setToolbarColor(getResources().getColor(R.color.green));
-            }
-
-        });
-
-        yellowButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view)
-            {
-                mToolbar.setBackgroundColor(getResources().getColor(R.color.yellow));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    getWindow().setStatusBarColor(getResources().getColor(R.color.yellow));
-                }
-                setToolbarColor(getResources().getColor(R.color.yellow));
-            }
-
-        });
-
-        purpleButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view)
-            {
-                mToolbar.setBackgroundColor(getResources().getColor(R.color.purple));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    getWindow().setStatusBarColor(getResources().getColor(R.color.purple));
-                }
-                setToolbarColor(getResources().getColor(R.color.purple));
-            }
-        });
-
-        blueButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view)
-            {
-                mToolbar.setBackgroundColor(getResources().getColor(R.color.blue));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    getWindow().setStatusBarColor(getResources().getColor(R.color.blue));
-                }
-                setToolbarColor(getResources().getColor(R.color.blue));
-            }
-        });
-
-        blackButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view)
-            {
-
-                mToolbar.setBackgroundColor(getResources().getColor(R.color.black));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    getWindow().setStatusBarColor(getResources().getColor(R.color.black));
-                }
-                setToolbarColor(getResources().getColor(R.color.black));
-            }
-        });
-
-        orangeButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view)
-            {
-
-                mToolbar.setBackgroundColor(getResources().getColor(R.color.orange));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    getWindow().setStatusBarColor(getResources().getColor(R.color.orange));
-                }
-                setToolbarColor(getResources().getColor(R.color.orange));
-            }
-        });
-
+        pageLayout = (LinearLayout) findViewById(R.id.pageLayout);
+        pageColorSwitch = (Switch) findViewById(R.id.pageColorSwitch);
     }
 
-    private void setToolbarColor(int color)
-    {
-        toolbarColor =getSharedPreferences("ToolbarColor", MODE_PRIVATE);
-        meditor =toolbarColor.edit();
-        meditor.putInt("color", color);
-        meditor.apply();
+    //Creating & saving content to SP file @ Activity level
+    public void saveAccountData(View view) {
+        //Create SP object
+        SharedPreferences sharedPreference = getPreferences(Context.MODE_PRIVATE);
+        //Add editor interface to enable editting data in the SP file
+        SharedPreferences.Editor editor = sharedPreference.edit();
+        //Store values in the editor
+        editor.putString("name", etName.getText().toString());
+        editor.putString("profession", etProfession.getText().toString());
+        editor.putInt("prof_id", 287);
+        //Apply changes to SP file
+        editor.apply();// Changes are made asynchronously i.e in the background
+        //editor.commit(); Changes are made synchronously NOTE: Either apply or commit can be used
+
+    }
+    //Retrieving contents of saved SP file & loading in same activity
+    public void loadAccountData(View view) {
+        //Create SP object
+        SharedPreferences sharedPreference = getPreferences(Context.MODE_PRIVATE);
+        //Retrieve/extract values from the SP file
+        String name = sharedPreference.getString("name", "N/A");
+        String profession = sharedPreference.getString("profession","N/A");
+        int profId = sharedPreference.getInt("prof_id",0);
+
+        txvName.setText(name);
+        String profStr = profession + " - " + profId;
+        txvProfession.setText(profStr);
     }
 
-    private int getColor(){
-        toolbarColor =getSharedPreferences("ToolbarColor", MODE_PRIVATE);
-        selectedColor=toolbarColor.getInt("color", getResources().getColor(R.color.colorPrimary));  //Default color if no color choosen
-        return selectedColor;
+    public void openSecondActivity(View view) {
+
     }
 }
