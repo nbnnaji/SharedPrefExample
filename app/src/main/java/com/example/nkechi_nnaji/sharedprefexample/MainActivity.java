@@ -47,6 +47,12 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        // Load Data from Activity Level SharedPrefs
+        //This will occur when the OnCreate() starts: so we ensure SP data is retrieved on initialization of OnCreate ()
+        SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        boolean isChecked = sharedPreferences.getBoolean(Constants.KEY_PAGE_COLOR, false);
+        pageColorSwitch.setChecked(isChecked);
     }
 
     private void setPageColor(boolean isChecked){
