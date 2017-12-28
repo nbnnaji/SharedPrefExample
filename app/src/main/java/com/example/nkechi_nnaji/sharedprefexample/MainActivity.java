@@ -42,16 +42,23 @@ public class MainActivity extends AppCompatActivity {
         pageColorSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked){
-                //Creating a local/  activity level SP for changing page color
-                SharedPreferences sharedPreference = getPreferences(MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreference.edit();
-                //Key = green, Value = isChecked which is a boolean checking if the switch is checked or not
-                editor.putBoolean("green",isChecked);
-                editor.apply();
-                //Add a tenary expression to choose pagelayout background color
-                pageLayout.setBackgroundColor(isChecked? Color.BLUE: Color.WHITE);
+
+                setPageColor(isChecked);
+
             }
         });
+    }
+
+    private void setPageColor(boolean isChecked){
+        //Creating a local/  activity level SP for changing page color
+        SharedPreferences sharedPreference = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreference.edit();
+        //Key = green, Value = isChecked which is a boolean checking if the switch is checked or not
+        editor.putBoolean("green",isChecked);
+        editor.apply();
+        //Add a tenary expression to choose pagelayout background color
+        pageLayout.setBackgroundColor(isChecked? Color.BLUE: Color.WHITE);
+
     }
 
     //Creating & saving content to SP file @ Application level
