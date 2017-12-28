@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 editor.putBoolean("green",isChecked);
                 editor.apply();
                 //Add a tenary expression to choose pagelayout background color
-                pageLayout.setBackgroundColor(isChecked? Color.GREEN: Color.WHITE);
+                pageLayout.setBackgroundColor(isChecked? Color.BLUE: Color.WHITE);
             }
         });
     }
