@@ -3,6 +3,7 @@ package com.example.nkechi_nnaji.sharedprefexample;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
@@ -35,6 +37,21 @@ public class MainActivity extends AppCompatActivity {
 
         pageLayout = (LinearLayout) findViewById(R.id.pageLayout);
         pageColorSwitch = (Switch) findViewById(R.id.pageColorSwitch);
+
+        //Adding a page color switch listener
+        pageColorSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked){
+                //Creating a local/  activity level SP for changing page color
+                SharedPreferences sharedPreference = getPreferences(MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreference.edit();
+                //Key = green, Value = isChecked which is a boolean checking if the switch is checked or not
+                editor.putBoolean("green",isChecked);
+                editor.apply();
+                //Add a tenary expression to choose pagelayout background color
+                pageLayout.setBackgroundColor(isChecked? Color.GREEN: Color.WHITE);
+            }
+        });
     }
 
     //Creating & saving content to SP file @ Application level
