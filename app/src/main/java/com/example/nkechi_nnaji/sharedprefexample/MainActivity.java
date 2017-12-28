@@ -1,6 +1,7 @@
 package com.example.nkechi_nnaji.sharedprefexample;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.provider.SyncStateContract;
@@ -36,16 +37,16 @@ public class MainActivity extends AppCompatActivity {
         pageColorSwitch = (Switch) findViewById(R.id.pageColorSwitch);
     }
 
-    //Creating & saving content to SP file @ Activity level
+    //Creating & saving content to SP file @ Application level
     public void saveAccountData(View view) {
         //Create SP object
-        SharedPreferences sharedPreference = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPreference = getSharedPreferences(getPackageName()+ Constants.PREF_FILE_NAME, Context.MODE_PRIVATE);
         //Add editor interface to enable editting data in the SP file
         SharedPreferences.Editor editor = sharedPreference.edit();
         //Store values in the editor
-        editor.putString("name", etName.getText().toString());
-        editor.putString("profession", etProfession.getText().toString());
-        editor.putInt("prof_id", 287);
+        editor.putString(Constants.KEY_NAME, etName.getText().toString());
+        editor.putString(Constants.KEY_PROFESSION, etProfession.getText().toString());
+        editor.putInt(Constants.KEY_PROF_ID, 287);
         //Apply changes to SP file
         editor.apply();// Changes are made asynchronously i.e in the background
         //editor.commit(); Changes are made synchronously NOTE: Either apply or commit can be used
@@ -54,11 +55,11 @@ public class MainActivity extends AppCompatActivity {
     //Retrieving contents of saved SP file & loading in same activity
     public void loadAccountData(View view) {
         //Create SP object
-        SharedPreferences sharedPreference = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPreference = getSharedPreferences(getPackageName()+ Constants.PREF_FILE_NAME, Context.MODE_PRIVATE);
         //Retrieve/extract values from the SP file
-        String name = sharedPreference.getString("name", "N/A");
-        String profession = sharedPreference.getString("profession","N/A");
-        int profId = sharedPreference.getInt("prof_id",0);
+        String name = sharedPreference.getString(Constants.KEY_NAME, "N/A");
+        String profession = sharedPreference.getString(Constants.KEY_PROFESSION,"N/A");
+        int profId = sharedPreference.getInt(Constants.KEY_PROF_ID,0);
 
         txvName.setText(name);
         String profStr = profession + " - " + profId;
@@ -66,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openSecondActivity(View view) {
+        Intent intent = new Intent(this, SecondActivity.class);
+        startActivity(intent);
 
     }
 }

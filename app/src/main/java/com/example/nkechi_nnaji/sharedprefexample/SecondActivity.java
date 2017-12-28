@@ -1,5 +1,7 @@
 package com.example.nkechi_nnaji.sharedprefexample;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +26,16 @@ public class SecondActivity extends AppCompatActivity {
     }
 
     public void loadAccountData(View view) {
+        //Create SP object
+        SharedPreferences sharedPreference = getSharedPreferences(getPackageName()+ Constants.PREF_FILE_NAME, Context.MODE_PRIVATE);
+        //Retrieve/extract values from the SP file
+        String name = sharedPreference.getString(Constants.KEY_NAME, "N/A");
+        String profession = sharedPreference.getString(Constants.KEY_PROFESSION,"N/A");
+        int profId = sharedPreference.getInt(Constants.KEY_PROF_ID,0);
+
+        txvName.setText(name);
+        String profStr = profession + " - " + profId;
+        txvProfession.setText(profStr);
     }
 
     public void clearAccountData(View view) {
