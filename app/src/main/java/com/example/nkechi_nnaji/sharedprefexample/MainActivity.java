@@ -9,6 +9,7 @@ import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -17,88 +18,122 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.Arrays;
+
 public class MainActivity extends AppCompatActivity {
 
-    private EditText etName, etProfession;
-    private TextView txvName, txvProfession;
-    private Switch pageColorSwitch;
-    private LinearLayout pageLayout;
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+    private TextView txvDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        etName = (EditText) findViewById(R.id.etName);
-        etProfession = (EditText) findViewById(R.id.etProfession);
-
-        txvName = (TextView) findViewById(R.id.txvName);
-        txvProfession = (TextView) findViewById(R.id.txvProfession);
-
-        pageLayout = (LinearLayout) findViewById(R.id.pageLayout);
-        pageColorSwitch = (Switch) findViewById(R.id.pageColorSwitch);
-
-        //Adding a page color switch listener
-        pageColorSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked){
-
-                setPageColor(isChecked);
-
-            }
-        });
-
-        // Load Data from Activity Level SharedPrefs
-        //This will occur when the OnCreate() starts: so we ensure SP data is retrieved on initialization of OnCreate ()
-        SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
-        boolean isChecked = sharedPreferences.getBoolean(Constants.KEY_PAGE_COLOR, false);
-        pageColorSwitch.setChecked(isChecked);
+        txvDisplay =(TextView) findViewById(R.id.txvDisplay);
     }
 
-    private void setPageColor(boolean isChecked){
-        //Creating a local/  activity level SP for changing page color
-        SharedPreferences sharedPreference = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreference.edit();
-        //Key = green, Value = isChecked which is a boolean checking if the switch is checked or not
-        editor.putBoolean("green",isChecked);
+
+    public void saveObjectType(View view) {
+
+        Employee employee = getEmployeeObject();
+
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        //Serialization using GSON library
+        Gson gson = new Gson();
+        //Convert non-primitive data (Employee object) to a Json String (primitive data)
+        String jsonString = gson.toJson(employee, Employee.class);
+        Log.i(TAG+ "Save", jsonString);
+        editor.putString("employee_key", jsonString);
         editor.apply();
-        //Add a tenary expression to choose pagelayout background color
-        pageLayout.setBackgroundColor(isChecked? Color.BLUE: Color.WHITE);
+
+
 
     }
 
-    //Creating & saving content to SP file @ Application level
-    public void saveAccountData(View view) {
-        //Create SP object
-        SharedPreferences sharedPreference = getSharedPreferences(getPackageName()+ Constants.PREF_FILE_NAME, Context.MODE_PRIVATE);
-        //Add editor interface to enable editting data in the SP file
-        SharedPreferences.Editor editor = sharedPreference.edit();
-        //Store values in the editor
-        editor.putString(Constants.KEY_NAME, etName.getText().toString());
-        editor.putString(Constants.KEY_PROFESSION, etProfession.getText().toString());
-        editor.putInt(Constants.KEY_PROF_ID, 287);
-        //Apply changes to SP file
-        editor.apply();// Changes are made asynchronously i.e in the background
-        //editor.commit(); Changes are made synchronously NOTE: Either apply or commit can be used
+    public void loadObjectType(View view) {
+        //Extract Json string being stored in SP file
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        String jsonString = sharedPreferences.getString("employee_key","N/A");
+        Log.i(TAG+ "Load", jsonString);
 
-    }
-    //Retrieving contents of saved SP file & loading in same activity
-    public void loadAccountData(View view) {
-        //Create SP object
-        SharedPreferences sharedPreference = getSharedPreferences(getPackageName()+ Constants.PREF_FILE_NAME, Context.MODE_PRIVATE);
-        //Retrieve/extract values from the SP file
-        String name = sharedPreference.getString(Constants.KEY_NAME, "N/A");
-        String profession = sharedPreference.getString(Constants.KEY_PROFESSION,"N/A");
-        int profId = sharedPreference.getInt(Constants.KEY_PROF_ID,0);
+        //Deserialization
+        Gson gson = new Gson();
+       Employee employee =  gson.fromJson(jsonString, Employee.class);
 
-        txvName.setText(name);
-        String profStr = profession + " - " + profId;
-        txvProfession.setText(profStr);
+        displayText(employee);
     }
 
-    public void openSecondActivity(View view) {
-        Intent intent = new Intent(this, SecondActivity.class);
-        startActivity(intent);
+
+
+    public void saveGenericType(View view) {
+        Employee employee = getEmployeeObject();
+        Foo<Employee> foo = new Foo<>();
+        foo.setObject(employee);
+
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        //Serialization using GSON library
+        Gson gson = new Gson();
+        Type type = new TypeToken<Foo<Employee>>(){}.getType();
+
+        //Convert non-primitive data (Employee object) to a Json String (primitive data)
+        //Due to java type erasure, generic type data is lost so Foo.class won't work
+        String jsonString = gson.toJson(foo, type);
+        Log.i(TAG+ "Save", jsonString);
+        editor.putString("foo_key", jsonString);
+        editor.apply();
+
+
+    }
+
+    public void loadGenericType(View view) {
+
+        //Extract Json string being stored in SP file
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        String jsonString = sharedPreferences.getString("foo_key","N/A");
+        Log.i(TAG+ "Load", jsonString);
+
+        //Deserialization
+        Gson gson = new Gson();
+        Type type = new TypeToken<Foo<Employee>>(){}.getType();
+        Foo<Employee> employeefoo =  gson.fromJson(jsonString, type);
+        Employee employee = employeefoo.getObject();
+
+        displayText(employee);
+
+    }
+
+    private Employee getEmployeeObject(){
+
+        Employee employee = new Employee();
+        employee.setName("Nkechi Nnaji");
+        employee.setProfession("Software Engineer");
+        employee.setProfId(287);
+        employee.setRoles(Arrays.asList("Developer", "Admin"));
+
+        return employee;
+    }
+
+    private void displayText(Employee employee) {
+
+        //Add if statement incase the employee object is null
+        if(employee == null)
+            return;
+       String displayTxt = employee.getName()
+               + "\n" + employee.getProfession()
+               + "\n" + employee.getProfId()
+               + "\n" + employee.getRoles().toString();
+
+        txvDisplay.setText(displayTxt);
 
     }
 }
